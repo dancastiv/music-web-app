@@ -20,6 +20,8 @@ GET /wave?name=
 POST /submit
   name: string
   message: string
+
+  
 ```
 
 ## 2. Create Examples as Tests
@@ -66,6 +68,18 @@ Thanks Leo, you sent this message: "Hello world"
 """
 Please provide a name and a message
 """
+
+# Request:
+POST /albums
+
+# With body parameters:
+    title=Voyage
+    release_year=2022
+    artist_id=2
+
+# Expected response (200 OK)
+    (No content)
+
 ```
 
 ## 3. Test-drive the Route
@@ -75,6 +89,13 @@ _After each test you write, follow the test-driving process of red, green, refac
 Here's an example for you to start with:
 
 ```python
+
+# POST /albums
+# Expected response (200 ok): no content
+
+def test_post_albums(web_client):
+    response = web_client.post('/albums', data={'title': 'Voyage', 'release_year': 2022, 'artist_id': 2})
+    assert response.status_code == 200
 """
 GET /home
   Expected response (200 OK):

@@ -45,6 +45,23 @@ Album(12, Ring Ring, 1973, 2)
 Album(13, Voyage, 2022, 2)"""
 
 # test that if the user tries to post an album with no data, we get a 400 error code
-def test_post_empty_album(db_connection, web_client):
+def test_post_empty_album(web_client):
     response = web_client.post('/albums')
+    assert response.status_code == 400
+
+# test that user can retrieve a list of albums when calling get
+def test_get_artists(db_connection, web_client):
+    db_connection.seed('seeds/music_library.sql')
+    response = web_client.get('/artists')
     assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone'
+
+# test user can add a new artist and list returns with the additional artist included
+def test_post_artists(db_connection, web_client):
+    db_connection.seed('seeds/music_library.sql')
+    response = web_client.post('/artists', data={'name': 'Claude Debussy', 'genre': 'Classical'})
+    assert response.status_code == 200
+
+    get_response = web_client.get('/artists')
+    assert get_response.status_code == 200
+    assert get_response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Claude Debussy'
